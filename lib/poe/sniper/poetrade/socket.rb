@@ -89,9 +89,7 @@ module Poe
         def initial_id
           response = Net::HTTP.post_form(@live_search_uri, 'id' => -1)
           raise "Link #{@live_search_uri} is redirecting. Probably it's no longer valid. Create a new search with the same criteria (URL should be different) or remove this search." if response.body.include?("Redirecting...")
-          # TODO HttpResponseParser should parse it
-          response_data = JsonHelper.parse(response.body)
-          response_data['newid']
+          HttpResponseParser.new_id(response)
         end
 
         def get_log_url_signature
