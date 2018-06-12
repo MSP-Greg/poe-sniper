@@ -88,7 +88,7 @@ module Poe
 
         def initial_id
           response = Net::HTTP.post_form(@live_search_uri, 'id' => -1)
-          raise "Link #{@live_search_uri} is redirecting. Probably it's no longer valid. Create a new search with the same criteria (URL should be different) or remove this search." if response.body.include?("Redirecting...")
+          raise redirect_error if response.body.include?("edirect")
           HttpResponseParser.new_id(response)
         end
 
@@ -111,6 +111,10 @@ module Poe
 
         def log_connection_reconnect_attempt
           Logger.instance.info("Trying to recconect to #{@live_ws_uri}")
+        end
+
+        def redirect_error
+          "Link #{@live_search_uri} is redirecting. Probably it's no longer valid. Create a new search with the same criteria (URL should be different) or remove this search."
         end
       end
     end
