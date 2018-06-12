@@ -5,7 +5,7 @@ require 'eventmachine'
 require_relative 'whisper'
 require_relative 'alert'
 require_relative 'alerts'
-require_relative 'sockets'
+require_relative 'poetrade/socket'
 require_relative 'poe_trade_helper'
 require_relative 'json_helper'
 require_relative 'yaml_helper'
@@ -21,8 +21,7 @@ module Poe
         self.class.ensure_config_file!(config_path)
         @config = ParseConfig.new(config_path)
         @alerts = Alerts.new(@config['notification_seconds'].to_f, @config['iteration_wait_time_seconds'].to_f)
-        @sockets = Sockets.new(@alerts)
-        @soket_event_machines = nil
+        @sockets = []
       end
 
       def run
@@ -76,25 +75,31 @@ module Poe
         input_hash = load_input(@config['input_file_path'])
         Analytics.instance.track(event: 'App started', properties: AnalyticsData.app_start(input_hash))
 
+        input_hash.each do |provider, input|
+          if provider.eql?("poetrade")
+            input.each do |search_url, name|
+              @sockets.push(Poetrade::Socket.new(
+                @alerts,
+                PoeTradeHelper.live_search_uri(search_url),
+                PoeTradeHelper.live_ws_uri(@config['api_url'], search_url),
+                name
+              ))
+            end
+          elsif provider.eql?("ggg")
+          else
+            raise "Provider unknown: #{provider}"
+          end
+        end
+
+        return if @sockets.empty?
+
         # TODO: retry_timeframe_seconds blocks execution of other sockets
         # Multiple EMs in one process is not possible: https://stackoverflow.com/q/8247691/2771889
         # Alternatives would be iodine, plezi as pointed out here: https://stackoverflow.com/a/42522649/2771889
         EM.run do
-          input_hash.each do |provider, input|
-            if provider.eql?("poetrade")
-              @soket_event_machines << input.map do |search_url, name|
-                @sockets.socket_setup(
-                  PoeTradeHelper.live_search_uri(search_url),
-                  PoeTradeHelper.live_ws_uri(@config['api_url'], search_url),
-                  name,
-                  @config['keepalive_timeframe_seconds'].to_f,
-                  @config['retry_timeframe_seconds'].to_f
-                )
-              end
-            end
-          end
-          EM.stop if @soket_event_machines.reject(&:nil?).empty?
-        end unless input_hash.nil?
+          event_machines = @sockets.map { |socket| socket.setup(@config['keepalive_timeframe_seconds'].to_f, @config['retry_timeframe_seconds'].to_f) }
+          EM.stop if event_machines.reject(&:nil?).empty?
+        end
       end
 
       def load_input(file_path)
