@@ -5,7 +5,6 @@ require 'eventmachine'
 require_relative 'whisper'
 require_relative 'alert'
 require_relative 'alerts'
-require_relative 'poe_trade_helper'
 require_relative 'json_helper'
 require_relative 'yaml_helper'
 require_relative 'encapsulators'
@@ -14,6 +13,7 @@ require_relative 'analytics_data'
 require_relative 'logger'
 
 require_relative 'poetrade/socket'
+require_relative 'poetrade/uri_helper'
 
 require_relative 'ggg/socket'
 require_relative 'ggg/uri_helper'
@@ -83,8 +83,8 @@ module Poe
           if provider.eql?("poetrade")
             input.each do |search_url, name|
               @sockets << Poetrade::Socket.new(
-                PoeTradeHelper.live_search_uri(search_url),
-                PoeTradeHelper.live_ws_uri(@config['api_url'], search_url),
+                Poetrade::UriHelper.live_search_uri(search_url),
+                Poetrade::UriHelper.live_ws_uri(@config['api_url'], search_url),
                 name,
                 @alerts
               )
