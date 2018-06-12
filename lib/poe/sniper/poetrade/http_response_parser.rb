@@ -7,7 +7,7 @@ module Poe
   module Sniper
     module Poetrade
       class HttpResponseParser
-        def self.new_id(reponse)
+        def self.new_id(response)
           JsonHelper.parse(response.body)['newid']
           response_data['newid']
         end
