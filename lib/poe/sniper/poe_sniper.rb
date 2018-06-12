@@ -22,6 +22,7 @@ module Poe
         @config = ParseConfig.new(config_path)
         @alerts = Alerts.new(@config['notification_seconds'].to_f, @config['iteration_wait_time_seconds'].to_f)
         @sockets = Sockets.new(@alerts)
+        @soket_event_machines = nil
       end
 
       def run
@@ -79,16 +80,20 @@ module Poe
         # Multiple EMs in one process is not possible: https://stackoverflow.com/q/8247691/2771889
         # Alternatives would be iodine, plezi as pointed out here: https://stackoverflow.com/a/42522649/2771889
         EM.run do
-          ems = input_hash.map do |search_url, name|
-            @sockets.socket_setup(
-              PoeTradeHelper.live_search_uri(search_url),
-              PoeTradeHelper.live_ws_uri(@config['api_url'], search_url),
-              name,
-              @config['keepalive_timeframe_seconds'].to_f,
-              @config['retry_timeframe_seconds'].to_f
-            )
+          input_hash.each do |provider, input|
+            if provider.eql?("poetrade")
+              @soket_event_machines << input.map do |search_url, name|
+                @sockets.socket_setup(
+                  PoeTradeHelper.live_search_uri(search_url),
+                  PoeTradeHelper.live_ws_uri(@config['api_url'], search_url),
+                  name,
+                  @config['keepalive_timeframe_seconds'].to_f,
+                  @config['retry_timeframe_seconds'].to_f
+                )
+              end
+            end
           end
-          EM.stop if ems.reject(&:nil?).empty?
+          EM.stop if @soket_event_machines.reject(&:nil?).empty?
         end unless input_hash.nil?
       end
 
