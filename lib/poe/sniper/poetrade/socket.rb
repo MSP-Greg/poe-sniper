@@ -8,7 +8,6 @@ require_relative '../analytics'
 require_relative '../analytics_data'
 require_relative '../logger'
 
-# TODO: rename reconnect to reconnecting, remove get_* from method names
 module Poe
   module Sniper
     module Poetrade
