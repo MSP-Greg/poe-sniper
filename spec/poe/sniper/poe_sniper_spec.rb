@@ -79,10 +79,10 @@ RSpec.describe Poe::Sniper::PoeSniper do
           end
 
           it "creates sockets for each input entry" do
-            expect(Poe::Sniper::Poetrade::Socket).to receive(:new).with(kind_of(Poe::Sniper::Alerts), URI.parse('http://poe.trade/search/seridonomosure/live'),
-              URI.parse('ws://live.poe.trade/seridonomosure'), 'Everything on Standard')
-            expect(Poe::Sniper::Poetrade::Socket).to receive(:new).with(kind_of(Poe::Sniper::Alerts), URI.parse('http://poe.trade/search/gomobatonotaas/live'),
-              URI.parse('ws://live.poe.trade/gomobatonotaas'), 'Tabula on BSC')
+            expect(Poe::Sniper::Poetrade::Socket).to receive(:new).with( URI.parse('http://poe.trade/search/seridonomosure/live'),
+              URI.parse('ws://live.poe.trade/seridonomosure'), 'Everything on Standard', kind_of(Poe::Sniper::Alerts))
+            expect(Poe::Sniper::Poetrade::Socket).to receive(:new).with(URI.parse('http://poe.trade/search/gomobatonotaas/live'),
+              URI.parse('ws://live.poe.trade/gomobatonotaas'), 'Tabula on BSC', kind_of(Poe::Sniper::Alerts))
 
             described_instance.run
           end
@@ -151,10 +151,10 @@ RSpec.describe Poe::Sniper::PoeSniper do
             end
 
             it "creates sockets for each input entry" do
-              expect(Poe::Sniper::Poetrade::Socket).to receive(:new).with(kind_of(Poe::Sniper::Alerts), URI.parse('http://poe.trade/search/seridonomosure/live'),
-                URI.parse('ws://live.poe.trade/seridonomosure'), 'Everything on Standard')
-              expect(Poe::Sniper::Poetrade::Socket).to receive(:new).with(kind_of(Poe::Sniper::Alerts), URI.parse('http://poe.trade/search/gomobatonotaas/live'),
-                URI.parse('ws://live.poe.trade/gomobatonotaas'), 'Tabula on BSC')
+              expect(Poe::Sniper::Poetrade::Socket).to receive(:new).with(URI.parse('http://poe.trade/search/seridonomosure/live'),
+                URI.parse('ws://live.poe.trade/seridonomosure'), 'Everything on Standard', kind_of(Poe::Sniper::Alerts))
+              expect(Poe::Sniper::Poetrade::Socket).to receive(:new).with(URI.parse('http://poe.trade/search/gomobatonotaas/live'),
+                URI.parse('ws://live.poe.trade/gomobatonotaas'), 'Tabula on BSC', kind_of(Poe::Sniper::Alerts))
 
               described_instance.run
             end

@@ -78,12 +78,12 @@ module Poe
         input_hash.each do |provider, input|
           if provider.eql?("poetrade")
             input.each do |search_url, name|
-              @sockets.push(Poetrade::Socket.new(
-                @alerts,
+              @sockets << Poetrade::Socket.new(
                 PoeTradeHelper.live_search_uri(search_url),
                 PoeTradeHelper.live_ws_uri(@config['api_url'], search_url),
-                name
-              ))
+                name,
+                @alerts
+              )
             end
           elsif provider.eql?("ggg")
           else
