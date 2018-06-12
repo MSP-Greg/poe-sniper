@@ -22,15 +22,15 @@ module Poe
           @alerts = alerts
         end
 
-        def setup(keepalive_timeframe_seconds, retry_timeframe_seconds, reconnect = false)
+        def setup(keepalive_timeframe_seconds, retry_timeframe_seconds, reconnecting = false)
           begin
-            last_displayed_id = get_initial_id
+            last_displayed_id = initial_id
           rescue SocketError => e
             log_connection_error(@live_search_uri, e)
             # Try again
             sleep(retry_timeframe_seconds)
-            reconnect = true
-            return setup(keepalive_timeframe_seconds, retry_timeframe_seconds, reconnect)
+            reconnecting = true
+            return setup(keepalive_timeframe_seconds, retry_timeframe_seconds, reconnecting)
           end
 
           ws = Faye::WebSocket::Client.new(@live_ws_uri.to_s, nil, ping: keepalive_timeframe_seconds)
@@ -40,7 +40,7 @@ module Poe
             ws.send '{"type": "version", "value": 3}'
             ws.ping do
               log_connection_open(@live_ws_uri)
-              Analytics.instance.track(event: 'Socket reopened', properties: AnalyticsData.socket_reopened(@live_ws_uri)) if reconnect
+              Analytics.instance.track(event: 'Socket reopened', properties: AnalyticsData.socket_reopened(@live_ws_uri)) if reconnecting
             end
           end
 
@@ -71,14 +71,14 @@ module Poe
           end
 
           ws.on :close do |event|
-            Analytics.instance.track(event: 'Socket closed', properties: AnalyticsData.socket_closed(@live_ws_uri, event)) unless reconnect
+            Analytics.instance.track(event: 'Socket closed', properties: AnalyticsData.socket_closed(@live_ws_uri, event)) unless reconnecting
             log_connection_close(event)
 
             # Reopen on close: https://stackoverflow.com/a/22997338/2771889
             sleep(retry_timeframe_seconds)
             log_connection_reconnect_attempt
-            reconnect = true
-            setup(keepalive_timeframe_seconds, retry_timeframe_seconds, reconnect)
+            reconnecting = true
+            setup(keepalive_timeframe_seconds, retry_timeframe_seconds, reconnecting)
           end
 
           ws
@@ -86,7 +86,7 @@ module Poe
 
         private
 
-        def get_initial_id
+        def initial_id
           response = Net::HTTP.post_form(@live_search_uri, 'id' => -1)
           raise "Link #{@live_search_uri} is redirecting. Probably it's no longer valid. Create a new search with the same criteria (URL should be different) or remove this search." if response.body.include?("Redirecting...")
           # TODO PoeTradeParser should parse it
