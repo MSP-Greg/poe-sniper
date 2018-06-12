@@ -68,7 +68,7 @@ module Poe
 
       def start_offline_debug(socket_data_path, alert_thread)
         example_data = JsonHelper.parse_file(socket_data_path)
-        poe_trade_parser = PoeTradeParser.new(example_data)
+        poe_trade_parser = Poetrade::HttpResponseParser.new(example_data)
         poe_trade_parser.get_whispers.each do |whisper|
           @alerts.push(Alert.new(whisper, 'thing'))
         end

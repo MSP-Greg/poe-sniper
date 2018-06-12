@@ -4,7 +4,6 @@ require 'net/http'
 require_relative "uri_helper"
 require_relative '../whisper'
 require_relative '../alert'
-require_relative '../poe_trade_parser'
 require_relative '../analytics'
 require_relative '../analytics_data'
 require_relative '../logger'

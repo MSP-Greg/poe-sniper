@@ -1,3 +1,5 @@
+require 'uri'
+
 module Poe
   module Sniper
     module Ggg

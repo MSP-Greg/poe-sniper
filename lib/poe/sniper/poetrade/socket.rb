@@ -3,10 +3,11 @@ require 'net/http'
 
 require_relative '../whisper'
 require_relative '../alert'
-require_relative '../poe_trade_parser'
 require_relative '../analytics'
 require_relative '../analytics_data'
 require_relative '../logger'
+
+require_relative 'http_response_parser'
 
 module Poe
   module Sniper
@@ -55,12 +56,12 @@ module Poe
                   Logger.instance.warn("Unhandled `pong` received from server")
                 when 'notify'
                   response = Net::HTTP.post_form(@live_search_uri, 'id' => last_displayed_id)
-                  poe_trade_parser = PoeTradeParser.new(JsonHelper.parse(response.body))
-                  last_displayed_id = poe_trade_parser.get_last_displayed_id
-                  if poe_trade_parser.get_count == 0
+                  response_parser = HttpResponseParser.new(JsonHelper.parse(response.body))
+                  last_displayed_id = response_parser.get_last_displayed_id
+                  if response_parser.get_count == 0
                     Logger.instance.warn("Zero event count received, something's not right (query too early?)")
                   end
-                  poe_trade_parser.get_whispers.each do |whisper|
+                  response_parser.get_whispers.each do |whisper|
                     @alerts.push(Alert.new(whisper, @search_name))
                   end
                 else
@@ -88,7 +89,7 @@ module Poe
         def initial_id
           response = Net::HTTP.post_form(@live_search_uri, 'id' => -1)
           raise "Link #{@live_search_uri} is redirecting. Probably it's no longer valid. Create a new search with the same criteria (URL should be different) or remove this search." if response.body.include?("Redirecting...")
-          # TODO PoeTradeParser should parse it
+          # TODO HttpResponseParser should parse it
           response_data = JsonHelper.parse(response.body)
           response_data['newid']
         end
