@@ -2,8 +2,8 @@ require 'uri'
 
 module Poe
   module Sniper
+    # TODO: move to `poetrade` module
     class PoeTradeHelper
-
       def self.live_search_uri(search_url)
         search_url = search_url[0..-2] if search_url.end_with?('/')
         search_url += '/live' unless search_url.end_with?('/live')
@@ -21,7 +21,6 @@ module Poe
         path_parts = url.path.split '/'
         path_parts.last.eql?('live') ? path_parts[-2] : path_parts[-1]
       end
-
     end
   end
 end

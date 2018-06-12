@@ -5,7 +5,6 @@ require 'eventmachine'
 require_relative 'whisper'
 require_relative 'alert'
 require_relative 'alerts'
-require_relative 'poetrade/socket'
 require_relative 'poe_trade_helper'
 require_relative 'json_helper'
 require_relative 'yaml_helper'
@@ -13,6 +12,11 @@ require_relative 'encapsulators'
 require_relative 'analytics'
 require_relative 'analytics_data'
 require_relative 'logger'
+
+require_relative 'poetrade/socket'
+
+require_relative 'ggg/socket'
+require_relative 'ggg/uri_helper'
 
 module Poe
   module Sniper
@@ -86,6 +90,9 @@ module Poe
               )
             end
           elsif provider.eql?("ggg")
+            input.each do |search_url, name|
+              @sockets << Ggg::Socket.new(Ggg::UriHelper.live_ws_uri(search_url), name, @alerts)
+            end
           else
             raise "Provider unknown: #{provider}"
           end
