@@ -8,7 +8,7 @@ module Poe
         DETAILS_URI = "https://www.pathofexile.com/api/trade/fetch".freeze
   
         def self.live_ws_uri(search_url)
-          URI.parse("#{WS_URI}/#{league(search_url)}/#{search_id(search_url)}")
+          URI.parse("#{WS_URI}/#{league(search_url)}/#{search_id(search_url)}?encoding=text")
         end
 
         def self.details_uri(search_url, id)
