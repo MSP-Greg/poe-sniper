@@ -16,7 +16,7 @@ gem "faye-websocket"
 gem "json"
 gem "nokogiri"
 gem "rb-notifu"
-gem "win32-clipboard"
+gem "win32-clipboard" # maybe change to https://github.com/janlelis/clipboard
 gem "waitutil"
 gem "parseconfig"
 gem "analytics-ruby", '~> 2.0.0'
