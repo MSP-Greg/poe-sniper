@@ -5,10 +5,7 @@
 
 install:
   - set PATH=C:\Ruby23\bin;%PATH%
-  - appveyor DownloadFile https://dl.bintray.com/oneclick/OpenKnapsack/x86/openssl-1.0.2j-x86-windows.tar.lzma
-  - 7z e openssl-1.0.2j-x86-windows.tar.lzma
-  - 7z x -y openssl-1.0.2j-x86-windows.tar -oC:\ruby23\DevKit\mingw
-  - bundle config build.eventmachine --with-ssl-dir=C:/ruby23/DevKit/mingw --with-opt-include=C:/ruby23/DevKit/mingw/include
+  - bundle config build.eventmachine --with-ssl-dir=C:\OpenSSL-Win32
   - bundle install
 
 build: off
