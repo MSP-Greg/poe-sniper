@@ -1,5 +1,11 @@
+# Envirnment:
+# - https://www.appveyor.com/docs/build-environment/
+# - OpenSSL 1.0.2L (32-bit) (C:\OpenSSL-Win32\bin)
+# - Ruby 2.3.3 x86 (C:\Ruby23\bin)
+
 install:
   - set PATH=C:\Ruby23\bin;%PATH%
+  - gem install eventmachine --with-ssl-include=C:\OpenSSL-Win32\bin
   - bundle install
 
 build: off
