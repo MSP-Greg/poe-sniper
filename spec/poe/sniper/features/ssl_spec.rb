@@ -10,7 +10,6 @@ RSpec.describe "ssl support" do
       ws = Faye::WebSocket::Client.new('wss://echo.websocket.org')
 
       ws.on :open do |event|
-        p [:open]
         EM.stop
       end
     }
