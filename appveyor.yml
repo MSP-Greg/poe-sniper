@@ -5,7 +5,7 @@
 
 install:
   - set PATH=C:\Ruby23\bin;%PATH%
-  - gem install eventmachine --with-ssl-include=C:\OpenSSL-Win32\bin
+  - gem install eventmachine --platform ruby -- --with-opt-lib=C:\OpenSSL-Win32\bin --with-ssl-include=C:\OpenSSL-Win32\include
   - bundle install
 
 build: off
