@@ -22,13 +22,8 @@ module Poe
         end
 
         def setup(keepalive_timeframe_seconds, retry_timeframe_seconds, reconnecting = false)
-          ws = Faye::WebSocket::Client.new(@live_ws_uri.to_s, [], extensions: [PermessageDeflate])
+          ws = Faye::WebSocket::Client.new(@live_ws_uri.to_s, [], extensions: [PermessageDeflate], ping: 60)
           Logger.instance.info("Opening connection to #{get_log_url_signature}")
-
-          ws.on :open do |event|
-            log_connection_open(@live_ws_uri)
-            Analytics.instance.track(event: 'Socket reopened', properties: AnalyticsData.socket_reopened(@live_ws_uri)) if reconnecting
-          end
 
           ws.on :message do |event|
             Logger.instance.debug("Message received from #{get_log_url_signature}")
