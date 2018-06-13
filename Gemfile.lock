@@ -71,7 +71,7 @@ DEPENDENCIES
   analytics-ruby (~> 2.0.0)
   coveralls
   dotenv
-  eventmachine (= 1.2.7)
+  eventmachine
   faye-websocket
   json
   nokogiri
