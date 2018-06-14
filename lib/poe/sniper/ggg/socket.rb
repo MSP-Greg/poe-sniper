@@ -13,17 +13,18 @@ module Poe
   module Sniper
     module Ggg
       class Socket
-        attr_accessor :live_search_uri, :live_ws_uri, :search_name, :ggg_session_id
+        attr_accessor :live_search_uri, :live_ws_uri, :search_name, :ggg_session_id, :headers
 
-        def initialize(live_ws_uri, search_name, alerts, ggg_session_id)
+        def initialize(live_ws_uri, search_name, alerts, ggg_session_id, headers)
           @live_ws_uri = live_ws_uri
           @search_name = search_name
           @alerts = alerts
           @ggg_session_id = ggg_session_id
+          @headers = headers
         end
 
         def setup(keepalive_timeframe_seconds, retry_timeframe_seconds, reconnecting = false)
-          ws = Faye::WebSocket::Client.new(@live_ws_uri.to_s, nil, headers: { Cookie: "stored_data=1; POESESSID=#{@ggg_session_id}" }, extensions: [PermessageDeflate])
+          ws = Faye::WebSocket::Client.new(@live_ws_uri.to_s, nil, headers: YAML.safe_load(@headers), extensions: [PermessageDeflate])
           Logger.instance.info("Opening connection to #{get_log_url_signature}")
 
           ws.on :open do |event|
