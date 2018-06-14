@@ -1,5 +1,6 @@
 require 'faye/websocket'
 require 'net/http'
+require 'permessage_deflate'
 
 require_relative "uri_helper"
 require_relative '../whisper'
@@ -22,7 +23,7 @@ module Poe
         end
 
         def setup(keepalive_timeframe_seconds, retry_timeframe_seconds, reconnecting = false)
-          ws = Faye::WebSocket::Client.new(@live_ws_uri.to_s, nil, headers: { Cookie: "stored_data=1; POESESSID=#{ggg_session_id}" })
+          ws = Faye::WebSocket::Client.new(@live_ws_uri.to_s, nil, headers: { Cookie: "stored_data=1; POESESSID=#{ggg_session_id}" }, extensions: [PermessageDeflate])
           Logger.instance.info("Opening connection to #{get_log_url_signature}")
 
           ws.on :open do |event|

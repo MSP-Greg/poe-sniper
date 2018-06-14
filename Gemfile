@@ -21,6 +21,7 @@ gem "waitutil"
 gem "parseconfig"
 gem "analytics-ruby", '~> 2.0.0'
 gem "dotenv"
+gem "permessage_deflate"
 
 group :development, :test do
   gem "rake", "~> 12.3"
