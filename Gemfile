@@ -11,7 +11,7 @@ ruby '>= 1.9.2'
 # https://stackoverflow.com/a/44446172/2771889
 ruby "2.3.3"
 
-gem "eventmachine", "1.0.9.1", platforms: :ruby # https://github.com/eventmachine/eventmachine/issues/800
+gem "eventmachine"
 gem "faye-websocket"
 gem "json"
 gem "nokogiri"

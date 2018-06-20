@@ -5,7 +5,7 @@
 
 install:
   - set PATH=C:\Ruby23\bin;%PATH%
-  - bundle config build.eventmachine --with-ssl-dir=C:\OpenSSL-Win32
+  - bundle config build.eventmachine --platform ruby --with-ssl-dir=C:\OpenSSL-Win32
   - bundle install
 
 build: off
