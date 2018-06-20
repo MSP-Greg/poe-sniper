@@ -1,11 +1,14 @@
-# Envirnment:
+# Environment:
 # - https://www.appveyor.com/docs/build-environment/
 # - OpenSSL 1.0.2L (32-bit) (C:\OpenSSL-Win32\bin)
 # - Ruby 2.3.3 x86 (C:\Ruby23\bin)
 
 install:
-  - set PATH=C:\Ruby23\bin;%PATH%
-  - bundle config build.eventmachine --platform ruby --with-ssl-dir=C:\OpenSSL-Win32
+  - set PATH=C:\Ruby%ruby_version%\bin;%PATH%
+  - appveyor DownloadFile https://dl.bintray.com/oneclick/OpenKnapsack/x86/openssl-1.0.2j-x86-windows.tar.lzma
+  - 7z e openssl-1.0.2j-x86-windows.tar.lzma
+  - 7z x -y openssl-1.0.2j-x86-windows.tar -oC:\ruby23\DevKit\mingw\i686-w64-mingw32
+  - bundle config build.eventmachine --use-system-libraries
   - bundle install
 
 build: off
@@ -21,3 +24,7 @@ test_script:
 artifacts:
   - path: artifacts/poe-sniper-*.zip
     name: release archive (x86 binary, config, example input)
+
+environment:
+  matrix:
+  - ruby_version: 23
