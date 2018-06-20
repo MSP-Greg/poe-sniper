@@ -5,10 +5,12 @@
 
 install:
   - set PATH=C:\Ruby%ruby_version%\bin;%PATH%
-  - appveyor DownloadFile https://dl.bintray.com/oneclick/OpenKnapsack/x86/openssl-1.0.2j-x86-windows.tar.lzma
-  - 7z e openssl-1.0.2j-x86-windows.tar.lzma
-  - 7z x -y openssl-1.0.2j-x86-windows.tar -oC:\ruby23\DevKit\mingw\i686-w64-mingw32
-  - bundle config build.eventmachine --use-system-libraries
+
+#  - appveyor DownloadFile https://dl.bintray.com/oneclick/OpenKnapsack/x86/openssl-1.0.2j-x86-windows.tar.lzma
+#  - 7z e openssl-1.0.2j-x86-windows.tar.lzma
+#  - 7z x -y openssl-1.0.2j-x86-windows.tar -oC:\ruby23\DevKit\mingw\i686-w64-mingw32
+
+  - appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/f5xsr0wuwxw8pewh/artifacts/eventmachine-1.3.0.dev.1-x86-mingw32.gem  -FileName eventmachine-1.3.0.dev.1-x86-mingw32.gem
   - bundle install
 
 build: off
